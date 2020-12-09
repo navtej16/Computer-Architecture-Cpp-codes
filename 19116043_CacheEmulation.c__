@@ -1,0 +1,300 @@
+#include <iostream>
+#include<bits/stdc++.h> 
+#include <vector>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+string* policyone(vector<string> vec , int p , int capacity){
+    
+    vector<string>::iterator it; 
+    vector<string>::iterator it1 ; 
+     string arr[p+3];
+    int compulsory_miss =0;
+    int capacity_miss =0;
+
+    vector<string> cache;
+    it1 = cache.begin(); 
+    cout << p<<"\n";
+    for(int i=0;i<p;i++){
+       
+        cout << vec.at(i) <<"\n";
+         it = find (cache.begin(), cache.end(), vec.at(i));
+            // cout << vec.at(i) <<"\n";
+        if(it == cache.end()){
+            arr[i+3] = "MISS";
+            cout <<"MISS" <<"\n";
+            if(cache.size() < capacity)
+            {
+                cache.push_back(vec.at(i));
+                compulsory_miss++;
+            }
+            else {
+                cache.erase(cache.begin());
+                cache.push_back(vec.at(i));
+                capacity_miss++;
+            }
+        }
+        else{
+             arr[i+3] = "HIT";
+            cout << "HIT" << "\n";
+            cache.erase(it);
+            cache.push_back(vec.at(i));
+           
+        }
+        cout<<"cache ";
+       for (int j =0 ; j<cache.size(); j++){
+        cout<< cache.at(j);
+        
+    }
+    cout<<"\n";
+    
+    }
+
+    arr[0] = p ;
+    arr[1] = compulsory_miss;
+    arr[2] = capacity_miss;
+    
+    return arr;
+    
+}
+
+string* policytwo(vector<string> vec , int p , int capacity){
+    
+    vector<string>::iterator it; 
+    vector<string>::iterator it1 ; 
+    string arr[p+3];
+    int compulsory_miss =0;
+    int capacity_miss =0;
+
+    vector<string> cache;
+    it1 = cache.begin(); 
+    cout << p<<"\n";
+    for(int i=0;i<p;i++){
+       
+        cout << vec.at(i) <<"\n";
+         it = find (cache.begin(), cache.end(), vec.at(i));
+            // cout << vec.at(i) <<"\n";
+        if(it == cache.end()){
+             arr[i+3] = "MISS";
+           
+            cout <<"MISS" <<"\n";
+            if(cache.size() < capacity)
+            {cache.push_back(vec.at(i));
+             compulsory_miss++;
+            }
+            else {
+                cache.erase(cache.begin());
+                cache.push_back(vec.at(i));
+                capacity_miss++;
+            }
+        }
+        else{
+             arr[i+3] = "HIT";
+            cout << "HIT" << "\n";
+           
+        }
+        cout<<"cache ";
+       for (int j =0 ; j<cache.size(); j++){
+        cout<< cache.at(j);
+        
+    }
+    cout<<"\n";
+    
+    }
+
+    arr[0] = p ;
+    arr[1] = compulsory_miss;
+    arr[2] = capacity_miss;
+    
+     return arr;
+    
+}
+
+
+
+int predict(vector<string> vec ,vector<string> cache , int p , int index)
+{
+    int res = -1;
+    int r;
+     int farthest = index ;
+             for(int q =0 ; q<cache.size();q++){
+                for ( r = index ; r<p;r++)
+                {
+                    if(vec.at(r) == cache.at(q))
+                    {
+                        if (r > farthest) { 
+                    farthest = r; 
+                    res = q; 
+                } 
+                break; 
+                    }
+                }
+                
+                 if(r == p)
+                 {
+                   return q;
+                 }
+        
+             }
+             
+             
+               return (res == -1) ? 0 : res; 
+               
+            }
+
+
+string* policythree(vector<string> vec , int p , int capacity){
+    
+    vector<string>::iterator it; 
+    vector<string>::iterator it1 ; 
+     int compulsory_miss =0;
+    int capacity_miss =0;
+    string arr[p+3];
+    
+    vector<string> cache;
+    it1 = cache.begin(); 
+    cout << p<<"\n";
+    for(int i=0;i<p;i++){
+       
+        cout << vec.at(i) <<"\n";
+         it = find (cache.begin(), cache.end(), vec.at(i));
+            // cout << vec.at(i) <<"\n";
+        if(it == cache.end()){
+             arr[i+3] = "MISS";
+           
+            cout <<"MISS" <<"\n";
+            if(cache.size() < capacity)
+            {cache.push_back(vec.at(i));
+              compulsory_miss++;
+            }
+            
+            else {
+                capacity_miss++;
+                 int j = predict(vec , cache , p , i + 1);
+                  cache[j] = vec[i]; 
+                
+               
+        }
+        }
+        else{
+             arr[i+3] = "HIT";
+            cout << "HIT" << "\n";
+            
+           
+        }
+        cout<<"cache ";
+       for (int j =0 ; j<cache.size(); j++){
+        cout<< cache.at(j);
+        
+    }
+    cout<<"\n";
+    
+    }
+
+    arr[0] = p ;
+    arr[1] = compulsory_miss;
+    arr[2] = capacity_miss;
+    
+     return arr;
+    
+}
+
+
+
+
+
+
+
+int main()
+{
+
+string replacementpolicy;
+    cin >> replacementpolicy ;
+string address;
+cin >> address;
+
+
+int capacity;
+ cin >> capacity;
+
+
+    ifstream inFile;
+    int sum =0 ;
+    string x;
+     vector<string> pages ;
+    inFile.open("C:\\Users\\Lenovo\\Downloads\\Sample1.txt");
+    if (!inFile) {
+        cout << "Unable to open file";
+        exit(1); // terminate with error
+    }
+    
+    while (inFile >> x) {
+
+        pages.push_back(x);
+
+    }
+    
+    inFile.close();
+    
+ 
+    int n = pages.size();
+
+
+     if(replacementpolicy == "LRU"){
+
+    string* temp =  policyone(pages, n, capacity); 
+
+
+ofstream myfile;
+  myfile.open ("19116043_" + replacementpolicy + "_" + address + "_" + to_string(capacity) + ".out" );
+   myfile << "TOTAL_ACCESSES ="<< " " << temp[0] << "/n" ;
+   myfile << "TOTAL_MISSES ="<< " " << temp[1] + temp [2] << "/n" ;
+    myfile << "COMPULSORY_MISSES = "<< " " << temp[1] << "/n" ;
+     myfile << "CAPACITY_MISSES ="<< " " << temp[2] << "/n" ;
+
+     for (int i =0 ; i < n ; i++){
+          myfile <<  temp[i+3] << "/n" ;
+     }
+  myfile.close();
+
+
+    }
+
+     if(replacementpolicy == "FIFO"){
+    string* temp =  policytwo(pages, n, capacity);
+
+    ofstream myfile;
+   myfile.open ("19116043_" + replacementpolicy + "_" + address + "_" + to_string(capacity) + ".out" );
+  myfile << "TOTAL_ACCESSES ="<< " " << temp[0] << "/n";
+   myfile << "TOTAL_MISSES ="<< " " << temp[1] + temp [2]<< "/n" ;
+    myfile << "COMPULSORY_MISSES = "<< " " << temp[1] << "/n";
+     myfile << "CAPACITY_MISSES ="<< " " << temp[2] << "/n";
+      for (int i =0 ; i < n ; i++){
+          myfile <<  temp[i+3] << "/n" ;
+     }
+  myfile.close(); 
+
+    }
+
+     if(replacementpolicy == "OPTIMAL"){
+   string* temp =  policythree(pages, n, capacity);
+
+    ofstream myfile;
+   myfile.open ("19116043_" + replacementpolicy + "_" + address + "_" + to_string(capacity) + ".out" );
+ myfile << "TOTAL_ACCESSES ="<< " " << temp[0] << "/n";
+   myfile << "TOTAL_MISSES ="<< " " << temp[1] + temp [2]<< "/n" ;
+    myfile << "COMPULSORY_MISSES = "<< " " << temp[1] << "/n";
+     myfile << "CAPACITY_MISSES ="<< " " << temp[2] << "/n";
+      for (int i =0 ; i < n ; i++){
+          myfile <<  temp[i+3] << "/n" ;
+     }
+  myfile.close(); 
+
+    }
+   
+
+    return 0;
+
+}
